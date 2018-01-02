@@ -1,4 +1,5 @@
 import { queryAppstoreMenu } from '../services/api';
+import { routerRedux } from 'dva/router';
 
 export default {
   namespace: 'appstore',

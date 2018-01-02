@@ -9,19 +9,23 @@ import FormModal from '../../../components/FormModal/FormModal';
 
 import styles from './interface.less';
 
+@connect(state => ({
+  interface: state.interface,
+}))
+
 export default class Interface extends PureComponent {
   constructor (props) {
-    super(props)
+    super(props);
+    let tableHeight = window.innerHeight - 320;
     this.state = {
       FilterTableParams: {
         filterList: [
           { key: 'name', type: 'input', label: '名称', placeholder: '请输入接口名称' },
           { key: 'path', type: 'input', label: '路径', placeholder: '请输入接口路径' },
           { key: 'group', type: 'input', label: '分组', placeholder: '请输入接口分组' },
-          { key: 'state', type: 'select', options: [{ key: 1, label: '未开始' }, { key: 2, label: '开发中'}, { key: 3, label: '已发布' }, { key: 3, label: '已废弃' }], label: '状态', placeholder: '请选择接口状态' },
         ],
         filterGrade: [],
-        filterForm: { name: '', path: '', group: '', state: '' },
+        filterForm: { name: '', path: '', group: ''},
         addBtn: true,
         fetch: { url: '/api/project/interface', data: () => this.filterForm, dataKey: 'rows' },
         tableList: [
@@ -44,7 +48,8 @@ export default class Interface extends PureComponent {
         opreat: [{ key: 1, name: '详情' }, { key: 2, name: '删除' }],
         rowKey: 'id',
         localName: 'equipment',
-        scroll: 1200
+        pagination: false,
+        scroll: tableHeight
       }
     }
   }
@@ -54,25 +59,9 @@ export default class Interface extends PureComponent {
   }
   
   render () {
-    let { FilterTableParams, modalVisible, modalLevel, levelTableParams  } = this.state
-    const menuHandle = function (e, record) {
-      switch(e.key) {
-        case 1: 
-        break;
-        case 2:
-        break;
-      }
-    }
-    const onAdd = () => {
-      this.props.dispatch({
-        type: 'equipment/showModal',
-        payload: {
-          modalTitle: '新增优惠券',
-        },
-      })
-    }
-    FilterTableParams.menuClick = menuHandle
-    FilterTableParams.onAdd = onAdd
+    let { FilterTableParams, modalVisible, modalLevel, levelTableParams  } = this.state;
+    FilterTableParams.menuClick = this.props.tableOpreat
+    FilterTableParams.onAdd = this.props.addFun
     return (
       <FilterTable {...FilterTableParams}   />
     )

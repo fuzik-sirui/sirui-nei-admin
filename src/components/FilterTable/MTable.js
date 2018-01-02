@@ -76,7 +76,9 @@ class DataTable extends React.Component {
         return
       }
       let { pagination } = this.state
-      pagination.total = result.total || pagination.total
+      if (typeof pagination !== 'boolean') {
+        pagination.total = result.total || pagination.total
+      }
       this.setState({
         loading: false,
         dataSource: dataKey ? result[dataKey] : result.data,
@@ -96,7 +98,7 @@ class DataTable extends React.Component {
       tableProps.columns.splice(tableProps.columns.length - 1, 1)
     } else {
       tableProps.columns.push({ 
-        title: '操作', dataIndex: 'action', key: 'action', fixed: 'right',
+        title: '操作', dataIndex: 'action', key: 'action',
         render (text, record) {
           return <DropOption onMenuClick={e => self.props.menuClick(e, record)} menuOptions={self.props.opreat} />
         }
@@ -104,6 +106,7 @@ class DataTable extends React.Component {
     }
     return (<Table
       ref="DataTable"
+      size="middle"
       className={styles.dataTable}
       loading={loading}
       onChange={this.handleTableChange}
@@ -111,7 +114,7 @@ class DataTable extends React.Component {
       rowKey={record => record[rowKey]}
       pagination={pagination}
       dataSource={dataSource}
-      scroll={{ x: this.props.scroll }}
+      scroll={{ y: this.props.scroll }}
     />)
   }
 }
@@ -120,7 +123,10 @@ class DataTable extends React.Component {
 DataTable.propTypes = {
   fetch: PropTypes.object.isRequired,
   rowKey: PropTypes.string.isRequired,
-  pagination: PropTypes.object,
+  pagination: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.object,
+  ]),
   columns: PropTypes.array.isRequired,
   opreat: PropTypes.array.isRequired,
   otherList: PropTypes.array,

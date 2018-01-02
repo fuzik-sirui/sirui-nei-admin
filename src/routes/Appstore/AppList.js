@@ -12,6 +12,7 @@ const TabPane = Tabs.TabPane;
 
 @connect(state => ({
   appstore: state.appstore,
+  interface: state.interface,
 }))
 
 export default class AppList extends PureComponent {
@@ -26,12 +27,29 @@ export default class AppList extends PureComponent {
 
   }
 
+  tableMenuClick = (e, record) => {
+    // if (e.key === 1) {
+    //   console.log('ccc');
+      
+    // }
+    this.props.dispatch({
+      type: 'interface/detail',
+      payload: {
+        id: record.id
+      }
+    });
+  }
+
+  interfaceAdd () {
+
+  }
+
   render () {
     return (
       <div className={styles.projectWrap}>
-        <Tabs onChange={this.tabChange}>
+        <Tabs className={styles.projectTabs} onChange={this.tabChange}>
           <TabPane tab="异步接口" key="1">
-            <Interface />
+            <Interface tableOpreat={this.tableMenuClick} addFun={this.interfaceAdd} />
           </TabPane>
           <TabPane tab="数据模型" key="2">
 

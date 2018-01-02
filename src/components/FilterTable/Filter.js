@@ -183,7 +183,7 @@ export default class Filter extends Component {
                 </div> : null
               }
               <Col span={this.state.grade ? 20: 7} offset={this.state.grade ? 2 : 0} lg={this.state.grade ? 20: 7} xs={this.state.grade ? 20: 22}>
-                <FormItem>
+                <FormItem style={{ marginBottom: '0'}}>
                   <div className={styles.filterBtn}>
                     <Button type="primary" icon="search" onClick={search}>搜索</Button>
                     <Button icon="reload" onClick={search}>重置</Button>

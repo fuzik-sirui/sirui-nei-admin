@@ -2,16 +2,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, List, Avatar, Menu, Icon } from 'antd';
 import { Route, Redirect, Switch, Link } from 'dva/router';
+import { getRoutes } from '../../utils/utils';
 
-import dynamic from 'dva/dynamic';
 
 import NotFound from '../Exception/404';
 import AppList from './AppList';
-// wrapper of dynamic
-const dynamicWrapper = (models, component) => dynamic({
-  models: () => models.map(m => import(`../../models/${m}.js`)),
-  component,
-});
+import InterfaceDetail from './components/InterfaceDetail';
 
 import styles from './index.less';
 
@@ -78,7 +74,7 @@ export default class Index extends PureComponent {
   }
 
   render() {
-    let { appstore: { loading: projectLoading, menuData } } = this.props
+    let { appstore: { loading: projectLoading, menuData }, match, routerData } = this.props
     return (
       <div className={styles.appWrap} >
         <div className={styles.leftMenu}>
@@ -89,7 +85,18 @@ export default class Index extends PureComponent {
         </div>
         <div className={styles.rightPage} >
           <Switch>
-            <Route path="/appstore/appList" component={AppList} />
+            {
+              getRoutes(match.path, routerData).map(item =>
+                (
+                  <Route
+                    key={item.key}
+                    path={item.path}
+                    component={item.component}
+                    exact={item.exact}
+                  />
+                )
+              )
+            }
             <Redirect exact from="/appstore" to="/appstore/appList" />
             <Route render={NotFound} />
           </Switch>

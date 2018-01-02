@@ -75,8 +75,8 @@ class BasicLayout extends React.PureComponent {
             collapsed={collapsed}
             dispatch={dispatch}
           />
-          <Content style={{ minHeight: '100vh', overflowX: 'hidden', overflowY: 'auto' }}>
-            <div style={{ margin: '24px 24px 0' }}>
+          <Content style={{ height: 'calc(100vh - 64px)', overflowX: 'hidden', overflowY: 'auto' }}>
+            <div style={{ margin: '10px 10px 0' }}>
               <Switch>
                 {
                   getRoutes(match.path, routerData).map(item =>
@@ -94,26 +94,6 @@ class BasicLayout extends React.PureComponent {
                 <Route render={NotFound} />
               </Switch>
             </div>
-            <GlobalFooter
-              links={[{
-                title: 'Pro 首页',
-                href: 'http://pro.ant.design',
-                blankTarget: true,
-              }, {
-                title: 'GitHub',
-                href: 'https://github.com/ant-design/ant-design-pro',
-                blankTarget: true,
-              }, {
-                title: 'Ant Design',
-                href: 'http://ant.design',
-                blankTarget: true,
-              }]}
-              copyright={
-                <div>
-                  Copyright <Icon type="copyright" /> 2017 蚂蚁金服体验技术部出品
-                </div>
-              }
-            />
           </Content>
         </Layout>
       </Layout>
