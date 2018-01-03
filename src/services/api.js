@@ -84,3 +84,30 @@ export async function fakeRegister(params) {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+//md 模型列表
+export async function queryMd() {
+  return request('/api/md');
+}
+
+//category -分组
+export async function addCategory(params) {
+  return request('/api/addCategory', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+//属性列表
+export async function queryAttrList(params) {
+  return request('/api/getAttrList', {
+    method: 'GET',
+    body: {
+      ...params,
+      method: 'post'
+    }
+  })
+}
