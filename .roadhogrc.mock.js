@@ -8,6 +8,7 @@ import { getProfileAdvancedData } from './mock/profile';
 import { getNotices } from './mock/notices';
 import { getAppstoreMenu, getInterface } from './mock/appstore';
 import { format, delay } from 'roadhog-api-doc';
+import { interfaceDetail } from './mock/interfaceDetail';
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
@@ -50,6 +51,7 @@ const proxy = {
   'GET /api/project/notice': getNotice,
   'GET /api/activities': getActivities,
   'GET /api/rule': getRule,
+  'GET /api/interface/detail': interfaceDetail,
   'POST /api/rule': {
     $params: {
       pageSize: {

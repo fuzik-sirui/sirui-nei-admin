@@ -7,6 +7,21 @@ const menuData = [{
   icon: 'appstore-o',
   path: 'appstore',
 }, {
+  name: '模型',
+  icon: 'inbox',
+  path: 'md',
+  hideInMenu: true,
+  children: [{
+    name: '列表',
+    path: 'list',
+  }, {
+    name: '属性',
+    path: 'attr/:id',
+  }, {
+    name: '新增',
+    path: 'add',
+  }],
+}, {
   name: '账户',
   icon: 'user',
   path: 'user',

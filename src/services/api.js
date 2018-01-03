@@ -8,6 +8,13 @@ export async function queryAppstoreMenu (params) {
   })
 }
 
+export async function getInterDetail (params) {
+  return request('api/interface/detail', {
+    method: 'GET',
+    body: params
+  })
+}
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
