@@ -1,4 +1,4 @@
-import react, { Component } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Cascader, Form, Row, Col, Input, Select, Radio, DatePicker, Button, Modal } from 'antd'
 import { request } from '../../utils/request'

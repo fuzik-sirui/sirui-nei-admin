@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Row, Col, Card, List, Avatar, Menu, Icon } from 'antd';
 import { Route, Redirect, Switch, Link } from 'dva/router';
 import { getRoutes } from '../../utils/utils';
-
+import classNames from 'classnames';
 
 import NotFound from '../Exception/404';
 import AppList from './AppList';
@@ -29,7 +29,12 @@ export default class Index extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'appstore/fetchMenu'
-    })
+    });
+    if (this.props.location.pathname !== '/appstore/appList') {
+      dispatch({ type: 'appstore/showBack'});
+    } else {
+      dispatch({ type: 'appstore/hideBack'});
+    }
   }
 
   menuItem(data) {
@@ -41,7 +46,7 @@ export default class Index extends PureComponent {
   }
 
   handleClick() {
-
+    
   }
 
   renderMenu(menuData) {
@@ -73,15 +78,20 @@ export default class Index extends PureComponent {
     }
   }
 
+  backFun = () => {
+    this.props.dispatch({
+      type: 'appstore/back',
+    })
+  }
+
   render() {
-    let { appstore: { loading: projectLoading, menuData }, match, routerData } = this.props
+    let { appstore: { loading: projectLoading, menuData, showBack }, match, routerData } = this.props
     return (
       <div className={styles.appWrap} >
         <div className={styles.leftMenu}>
-          <h2 className={styles.menuTitle}><Icon type="appstore" style={{marginRight: '10px'}} />全部项目组</h2>
-          {
-            this.renderMenu(menuData)
-          }
+          <div onClick={this.backFun} className={classNames({ [styles.backBtn]: true, [styles.backActive]: showBack })}> <Icon type="caret-left" /> </div>
+          <h2 className={[styles.menuTitle]}><Icon type="appstore" style={{marginRight: '10px'}} />全部项目组</h2>
+          { this.renderMenu(menuData) }
         </div>
         <div className={styles.rightPage} >
           <Switch>

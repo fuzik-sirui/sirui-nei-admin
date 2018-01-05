@@ -10,7 +10,6 @@ const menuData = [{
   name: '模型',
   icon: 'inbox',
   path: 'md',
-  hideInMenu: true,
   children: [{
     name: '列表',
     path: 'list',

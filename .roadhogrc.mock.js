@@ -9,6 +9,7 @@ import { getNotices } from './mock/notices';
 import { getAppstoreMenu, getInterface } from './mock/appstore';
 import { format, delay } from 'roadhog-api-doc';
 import { interfaceDetail } from './mock/interfaceDetail';
+import { getMds } from './mock/md';
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
@@ -82,8 +83,23 @@ const proxy = {
     res.send({ status: 'ok' });
   },
   'GET /api/notices': getNotices,
+  // appstore
   'POST /api/appstore/menu': getAppstoreMenu,
   'POST /api/project/interface': getInterface,
+  //md
+  'GET /api/md': getMds,
+  //addCategory
+  'POST /api/addCategory': (req, res) => {
+    res.send({ status: 'ok' });
+  },
+  'GET /api/getCategory': mockjs.mock({
+    'list|100': [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }]
+  }),
+  'GET /api/getAttrList': mockjs.mock({
+    'list': [{ key: 1, date: '2014-12-24 23:12:00', name: '名称1', upgradeNum: 'Upgraded: 56' },
+    { key: 2, date: '2014-12-24 23:12:00', name: '名称2', upgradeNum: 'Upgraded: 56' },
+    { key: 3, date: '2014-12-24 23:12:00', name: '名称3', upgradeNum: 'Upgraded: 56' }]
+  })
 };
 
 export default noProxy ? {} : delay(proxy, 1000);

@@ -7,6 +7,7 @@ export default {
   state: {
     menuData: [],
     loading: true,
+    showBack: false,
   },
 
   effects: {
@@ -25,6 +26,9 @@ export default {
         payload: false,
       });
     },
+    *back (_, { call, put }) {
+      yield put(routerRedux.goBack());
+    }
   },
 
   reducers: {
@@ -33,6 +37,18 @@ export default {
         ...state,
         menuData: action.payload,
       };
+    },
+    showBack(state, action) {
+      return {
+        ...state,
+        showBack: true,
+      }
+    },
+    hideBack(state, action) {
+      return {
+        ...state,
+        showBack: false,
+      }
     },
     changeLoading(state, action) {
       return {

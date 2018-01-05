@@ -12,10 +12,10 @@ const FormItem = Form.Item
 class HoverFormClass extends Component {
   constructor (props) {
     super(props);
-    const { formList } = this.props;
+    const { formList, fromData } = this.props;
     this.state = {
       formList: formList,
-      form: {},
+      form: fromData,
     }
   }
 
@@ -91,13 +91,13 @@ class HoverFormClass extends Component {
   }
 
   handleSubmit () {
-
+    this.props.onOk(this.state.form)
   }
 
   render () {
     const { formList } = this.props
     return (
-      <Form className={styles.hoverForm} onSubmit={this.handleSubmit}>
+      <Form layout="inline" className={styles.hoverForm} onSubmit={this.handleSubmit}>
         <Row gutter={10}>
           {
             formList.map((item) => {
@@ -113,7 +113,8 @@ class HoverFormClass extends Component {
 HoverFormClass.propsTypes = {
   formList: PropTypes.array.isRquired,
   onOk: PropTypes.func.isRquired,
+  fromData: PropTypes.object.isRquired,
 }
 
-const HoverForm = Form.create()(HoverFormClass)
-export default HoverForm
+const HoverForm = Form.create()(HoverFormClass);
+export default HoverForm;
