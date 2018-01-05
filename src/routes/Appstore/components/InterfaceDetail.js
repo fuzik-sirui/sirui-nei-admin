@@ -51,6 +51,7 @@ class DetailInterface extends PureComponent {
       type: 'interface/getData',
       payload: queryString.parse(this.props.location.search)
     })
+    
   }
 
   componentWillReceiveProps (nextProps) {
@@ -69,10 +70,10 @@ class DetailInterface extends PureComponent {
   }
 
   contentList = (key) => {
-    let { pageData: { request } } = this.state;
+    let { pageData: { request, response } } = this.state;
     let option = [
-      { value: '0', label: '否' },
-      { value: '1', label: '是' }
+      { value: 0, label: '否' },
+      { value: 1, label: '是' }
     ]
     const columns = [{
       title: '名称',
@@ -137,17 +138,33 @@ class DetailInterface extends PureComponent {
           <Input value={request.url} style={{width: '350px'}} />
           <div style={{marginTop: '20px'}}>
             <span>请求数据</span>
-            <Table columns={columns} dataSource={this.state.pageData.request.data} pagination={false} />
+            <Table columns={columns} dataSource={this.state.pageData.request.data} rowKey={record => record.name} pagination={false} />
           </div>
         </div> : <Spin /> }
       </div>,
-      response: <div></div>
+      response:  <div className={styles.responseWrap}>
+        {
+          response ? 
+          <div>
+            <div style={{marginTop: '20px'}}>
+              <span>返回数据</span>
+              <Table columns={columns} dataSource={this.state.pageData.response.data} rowKey={record => record.name} pagination={false} />
+            </div>
+          </div> : <Spin />
+        }
+      </div>
     }
     return List[key]
   }
 
   handleSubmit = () => {
 
+  }
+
+  onTabChange = (key) => {
+    this.setState({
+      tabKey: key
+    })
   }
 
   render () {
@@ -170,32 +187,42 @@ class DetailInterface extends PureComponent {
       <Card loading={detailLoading} title={pageData.title} className={styles.interDetailWrap}>
         <Form className={styles.topForm} layout="inline" onSubmit={this.handleSubmit} >
           <FormItem label="标签" {...formItemLayout} >
-            {getFieldDecorator('tips')(
-              <Input placeholder="标签"  />
+            {getFieldDecorator('tips', {
+              initialValue: pageData.tips,
+            })(
+              <Input placeholder="标签" />
             )}
           </FormItem>
           <FormItem label="创建者" {...formItemLayout} >
-            {getFieldDecorator('creator', { })(
+            {getFieldDecorator('creator', {
+              initialValue: pageData.creator,
+            })(
               <Input placeholder="创建者" />
             )}
           </FormItem>
           <FormItem label="分组"  {...formItemLayout} >
-            {getFieldDecorator('group', { })(
+            {getFieldDecorator('group', { 
+              initialValue: pageData.group,
+            })(
               <Input placeholder="分组" />
             )}
           </FormItem>
           <FormItem label="负责人"  {...formItemLayout} >
-            {getFieldDecorator('principal', { })(
+            {getFieldDecorator('principal', { 
+              initialValue: pageData.principal,
+            })(
               <Input placeholder="负责人"  />
             )}
           </FormItem>
           <FormItem label="描述"  {...formItemLayout} >
-            {getFieldDecorator('decs', { })(
+            {getFieldDecorator('decs', {
+              initialValue: pageData.decs,
+            })(
               <Input placeholder="描述" />
             )}
           </FormItem>
         </Form>
-        <Card tabList={tabList} >
+        <Card tabList={tabList} onTabChange={(key) => { this.onTabChange(key)}} >
           {this.contentList([tabKey])}
         </Card>
       </Card>

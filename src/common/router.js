@@ -49,13 +49,10 @@ export const getRouterData = (app) => {
     '/appstore/interfaceDetail': {
       component: dynamicWrapper(app, ['interface'], () => import('../routes/Appstore/components/InterfaceDetail'))
     },
-    '/md/list': {
-      component: dynamicWrapper(app, [], () => import('../routes/Md/Md')),
-    },
-    '/md/attr/:id': {
+    '/appstore/attr/:id': {
       component: dynamicWrapper(app, [], () => import('../routes/Attr/Attr')),
     },
-    '/md/add': {
+    '/appstore/attrAdd': {
       component: dynamicWrapper(app, [], () => import('../routes/MdAdd/MdAdd')),
     },
     '/user': {

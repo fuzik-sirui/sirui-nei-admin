@@ -73,7 +73,7 @@ export default class Md extends PureComponent {
     const extraContent = (
       <div className={styles.extraContent}>
         <ButtonGroup>
-          <Link to="add"><Button type="primary">新建模型</Button></Link>
+          <Link to="attrAdd"><Button type="primary">新建模型</Button></Link>
           <Button onClick={this.handleAdd} type="primary" disabled={!hasSelected}>删除</Button>
         </ButtonGroup>
         <Search
@@ -90,13 +90,10 @@ export default class Md extends PureComponent {
     };
     const hasSelected = selectedRowKeys.length > 0;
     return (
-      <PageHeaderLayout title="模型列表">
-        <Card bordered={false} extra={extraContent}>
-          {/* <EditableTable columns={columns} dataSource={data} /> */}
-          <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} pagination={false} />
-        </Card>
-
-      </PageHeaderLayout>
+      <Card bordered={false} extra={extraContent}>
+        {/* <EditableTable columns={columns} dataSource={data} /> */}
+        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} pagination={false} />
+      </Card>
     );
   }
 }

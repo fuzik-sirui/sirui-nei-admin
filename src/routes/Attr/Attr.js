@@ -150,19 +150,16 @@ export default class Attr extends PureComponent {
     ];
 
     return (
-      <PageHeaderLayout title="属性">
-        <Card bordered={false}>
-          <div style={{ marginBottom: '16px' }}>
-            <ButtonGroup>
-              <Button onClick={this.handleAdd}>添加</Button>
-              <Button onClick={() => this.goMd(true)}>从数据模型导入</Button>
-              <Button onClick={() => this.goJson(true)}>从JSON导入</Button>
-            </ButtonGroup>
-          </div>
-          <Table columns={columns} dataSource={this.state.attrList} pagination={false} />
-        </Card>
-
-      </PageHeaderLayout>
+      <Card title="数据模型详情" bordered={false}>
+        <div style={{ marginBottom: '16px' }}>
+          <ButtonGroup>
+            <Button onClick={this.handleAdd}>添加</Button>
+            <Button onClick={() => this.goMd(true)}>从数据模型导入</Button>
+            <Button onClick={() => this.goJson(true)}>从JSON导入</Button>
+          </ButtonGroup>
+        </div>
+        <Table columns={columns} dataSource={this.state.attrList} pagination={false} />
+      </Card>
     );
   }
 }
