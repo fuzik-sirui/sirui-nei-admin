@@ -25,7 +25,8 @@ export default class Md extends PureComponent {
     this.setState({ loading: true });
     queryMd().then(ret => {
       this.setState({
-        data: ret.datatypes
+        data: ret.datatypes,
+        loading: false
       })
     })
   }
@@ -45,6 +46,7 @@ export default class Md extends PureComponent {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
+    let { loading } = this.state;
     const columns = [{
       title: '名称',
       dataIndex: 'name',
@@ -92,7 +94,7 @@ export default class Md extends PureComponent {
     return (
       <Card bordered={false} extra={extraContent}>
         {/* <EditableTable columns={columns} dataSource={data} /> */}
-        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} pagination={false} />
+        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} pagination={false} loading={loading} />
       </Card>
     );
   }
