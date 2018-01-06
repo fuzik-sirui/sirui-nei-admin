@@ -22,6 +22,10 @@ class DetailInterface extends PureComponent {
   constructor(props) {
     super(props);
     let { interface: { pageData } } = this.props;
+    let option = [
+      { value: 0, label: '否' },
+      { value: 1, label: '是' }
+    ];
     this.state = {
       tabList: [
         {key: 'request', tab: '请求信息',},
@@ -43,6 +47,56 @@ class DetailInterface extends PureComponent {
         { type: 'input', placeholder: '描述', key: 'decs', rules: [] },
       ],
       pageData: pageData,
+      
+      columns: [{
+        title: '名称',
+        dataIndex: 'name',
+        render (text, record) {
+          return (
+            <EditableCell value={text} type="input" />
+          )
+        }
+      }, {
+        title: '类型',
+        dataIndex: 'type',
+        render (text, record) {
+          return (
+            <EditableCell value={text} type="input" />
+          )
+        }
+      }, {
+        title: '描述',
+        dataIndex: 'decs',
+        render (text, record) {
+          return (
+            <EditableCell value={text} type="input" />
+          )
+        }
+      }, {
+        title: '必需',
+        dataIndex: 'isRequired',
+        render (text, record) {
+          return (
+            <EditableCell value={text} type="select" option={option} />
+          )
+        }
+      }, {
+        title: '默认值',
+        dataIndex: 'defaultValue',
+        render (text, record) {
+          return (
+            <EditableCell value={text} type="input" />
+          )
+        }
+      }, {
+        title: '生成规则',
+        dataIndex: 'rules',
+        render (text, record) {
+          return (
+            <EditableCell value={text} type="input" />
+          )
+        }
+      }]
     }
   }
   
@@ -69,61 +123,26 @@ class DetailInterface extends PureComponent {
     })
   }
 
+  expandedRowRender = (record) => {
+    const { columns } = this.state;
+    if (record.childern) {
+      return (
+        <Table
+          rowKey={record => record.name}
+          columns={columns}
+          expandedRowRender={this.expandedRowRender}
+          dataSource={record.childern}
+          pagination={false}
+        />
+      );
+    } else {
+      return null;
+    }
+  }
+
   contentList = (key) => {
-    let { pageData: { request, response } } = this.state;
-    let option = [
-      { value: 0, label: '否' },
-      { value: 1, label: '是' }
-    ]
-    const columns = [{
-      title: '名称',
-      dataIndex: 'name',
-      render (text, record) {
-        return (
-          <EditableCell value={text} type="input" />
-        )
-      }
-    }, {
-      title: '类型',
-      dataIndex: 'type',
-      render (text, record) {
-        return (
-          <EditableCell value={text} type="input" />
-        )
-      }
-    }, {
-      title: '描述',
-      dataIndex: 'decs',
-      render (text, record) {
-        return (
-          <EditableCell value={text} type="input" />
-        )
-      }
-    }, {
-      title: '必需',
-      dataIndex: 'isRequired',
-      render (text, record) {
-        return (
-          <EditableCell value={text} type="select" option={option} />
-        )
-      }
-    }, {
-      title: '默认值',
-      dataIndex: 'defaultValue',
-      render (text, record) {
-        return (
-          <EditableCell value={text} type="input" />
-        )
-      }
-    }, {
-      title: '生成规则',
-      dataIndex: 'rules',
-      render (text, record) {
-        return (
-          <EditableCell value={text} type="input" />
-        )
-      }
-    }]
+    let { pageData: { request, response }, columns } = this.state;
+    
     const List = {
       request: <div className={styles.requestWrap}>
         { request ? <div>
@@ -146,9 +165,8 @@ class DetailInterface extends PureComponent {
         {
           response ? 
           <div>
-            <div style={{marginTop: '20px'}}>
-              <span>返回数据</span>
-              <Table columns={columns} dataSource={this.state.pageData.response.data} rowKey={record => record.name} pagination={false} />
+            <div style={{marginTop: '0px'}}>
+              <Table columns={columns} expandedRowRender={this.expandedRowRender} dataSource={this.state.pageData.response.data} rowKey={record => record.name} pagination={false} />
             </div>
           </div> : <Spin />
         }
