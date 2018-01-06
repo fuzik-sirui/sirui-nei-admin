@@ -9,6 +9,9 @@ import Category from './Category';
 import styles from "./MdAdd.less";
 
 import { queryCategory, queryAttrList } from "../../services/api";
+import FromJson from "../../components/FromMd/FormJson";
+import FromMd from "../../components/FromMd/FromMd";
+import { config } from '../../common/config';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -16,245 +19,282 @@ const Option = Select.Option;
 const ButtonGroup = Button.Group;
 
 @Form.create()
-export default class Add extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      categoryModal: false,
-      categoryList: [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }],
-      attrList: []
+export default class MdAdd extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            categoryModal: false,
+            mdModal: false,
+            jsonModal: false,
+            categoryList: [],//分组数组
+            attrList: []//属性数组
+        }
     }
-  }
-  componentDidMount() {
-    this.getAttrList();
-  }
-  handleModal = (val) => {
-    this.setState({
-      categoryModal: !!val
-    });
-  }
-  getCategory = () => {
-    queryCategory().then(ret => {
-      if (ret.status == 'ok') {
+
+    componentDidMount() {
+        let { match: { params: { id } } } = this.props;
+        if (id) {
+            this.getCategory({ id: id });
+            this.getAttrList({ id: id });
+        }
+
+    }
+
+    handleModal = (ret) => {
         this.setState({
-          categoryList: ret.list
+            mdModal: false
         });
-      }
-    })
-  }
-  getAttrList = () => {
-    queryAttrList({}).then(ret => {
-      if (ret.status == 'ok') {
+        this.getCategory();
+    }
+
+    /**
+     * 分组
+     */
+    getCategory = (params) => {
+        queryCategory(params).then(ret => {
+            this.setState({
+                categoryList: ret.list
+            });
+        })
+    }
+
+    /**
+     * 属性
+     */
+    getAttrList = (params) => {
+        queryAttrList(params).then(ret => {
+            this.setState({
+                attrList: ret.list
+            });
+        })
+    }
+
+    /**
+     * 新增
+     */
+    handleAdd = () => {
+        const _key = Math.floor(1000 * Math.random());
+        //先存服务器再渲染
+        const newData = {
+            key: _key,
+            name: '新增项',
+            age: 0,
+            address: 'Sidney No. 1 Lake Park',
+        };
+        const { attrList } = this.state;
         this.setState({
-          attrList: ret.list
+            attrList: [...attrList, newData]
+        })
+    }
+
+    /**
+     * 保存表单
+     */
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
         });
-      }
-    })
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  }
-
-  goCategory = () => {
-    this.setState(
-      { categoryModal: true }
-    )
-    console.log("goCategory：" + this.state.categoryModal);
-  }
-
-
-  tableFooter = () => {
-    return (<ButtonGroup>
-      <Button onClick={this.handleAdd}>添加</Button>
-      <Button onClick={() => { }}>从数据模型导入</Button>
-      <Button onClick={() => { }}>从JSON导入</Button>
-    </ButtonGroup>)
-  }
-
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
-      },
-    };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 20,
-          offset: 4,
-        },
-      },
-    };
-    const columns = [{
-      title: '名称',
-      dataIndex: 'name',
-      render: (text, record) => {
-        return (
-          <EditableCell value={text} type={getType(text)} />
-        )
-      }
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-      render: (text, record) => {
-        return (
-          <EditableCell value={text} type={getType(text)} />
-        )
-      }
-    },
-    {
-      title: '描述',
-      dataIndex: 'desc',
-      render: (text, record) => {
-        return (
-          <EditableCell value={text} type={getType(text)} />
-        )
-      }
-    },
-    {
-      title: '默认值',
-      dataIndex: 'default',
-      render: (text, record) => {
-        return (
-          <EditableCell value={text} type={getType(text)} />
-        )
-      }
-    },
-    {
-      title: '生成规则',
-      dataIndex: 'rule',
-      render: (text, record) => {
-        return (
-          <EditableCell value={text} type={getType(text)} />
-        )
-      }
     }
-    ];
-    const data = [];
-    for (let i = 0; i < 3; ++i) {
-      data.push({
-        key: i,
-        date: '2014-12-24 23:12:00',
-        name: '名称',
-        upgradeNum: 'Upgraded: 56',
-      });
+
+
+    /**
+     * 新建分组
+     */
+    goCategory = () => {
+        this.setState(
+            { categoryModal: true }
+        )
+        console.log("goCategory：" + this.state.categoryModal);
     }
-    let { categoryList } = this.state;
-    console.log(JSON.stringify(categoryList))
-    let Options = categoryList.map(item => <Option key={item.name}>{item.name}</Option>);
-    return (
-      <PageHeaderLayout title="新建数据模型">
-        <Card bordered={false}>
-          <Form ref="tableForm" onSubmit={this.handleSubmit}>
-            <FormItem
-              {...formItemLayout}
-              label="名称:"
-            >
-              {getFieldDecorator('name', {
-                rules: [{
-                  required: true, message: '请输入数据模型名称',
-                }],
-              })(
-                <Row gutter={8}>
-                  <Col span={8}>
-                    <Input />
-                  </Col>
-                  <Col span={16}>
-                    请输入数据模型名称，以英文字母，数字，下划线组成的1-40字符
+
+    /**
+     * 从模型导入 
+     */
+    goMd = () => {
+        this.setState({
+            mdModal: true
+        });
+    }
+
+    handleMd = (val) => {
+        this.setState({
+            mdModal: false
+        });
+    }
+    /**
+     * 从Json导入 
+     */
+    goJson = () => {
+        this.setState({
+            jsonModal: true
+        });
+    }
+
+    handleJson = () => {
+        this.setState({
+            jsonModal: false
+        });
+    }
+
+    /**
+     * 表格footer
+     */
+    tableFooter = () => {
+        return (<div><ButtonGroup>
+            <Button onClick={this.handleAdd}>添加</Button>
+            <Button onClick={this.goMd}>从数据模型导入</Button>
+            <Button onClick={this.goJson}>从JSON导入</Button>
+        </ButtonGroup>
+            <FromJson visible={this.state.jsonModal} handleModal={this.handleJson}></FromJson>
+            <FromMd visible={this.state.mdModal} handleModal={this.handleMd}></FromMd>
+        </div>
+        )
+    }
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        let formItemLayout = config.formItemLayout;
+        let tailFormItemLayout = config.tailFormItemLayout;
+        let { categoryList } = this.state;
+        let Options = categoryList.map(item => <Option key={item.name}>{item.name}</Option>);
+        let { attrList } = this.state;
+        //表头
+        const columns = [{
+            title: '名称',
+            dataIndex: 'name',
+            render: (text, record) => {
+                return (
+                    <EditableCell value={text} type={getType(text)} />
+                )
+            }
+        },
+        {
+            title: '类型',
+            dataIndex: 'type',
+            render: (text, record) => {
+                return (
+                    <EditableCell value={text} type={getType(text)} />
+                )
+            }
+        },
+        {
+            title: '描述',
+            dataIndex: 'desc',
+            render: (text, record) => {
+                return (
+                    <EditableCell value={text} type={getType(text)} />
+                )
+            }
+        },
+        {
+            title: '生成规则',
+            dataIndex: 'rule',
+            render: (text, record) => {
+                return (
+                    <EditableCell value={text} type={getType(text)} />
+                )
+            }
+        }];
+
+        return (
+            <div>
+                <Card bordered={false} title="新建数据模型">
+                    <Form ref="tableForm" onSubmit={this.handleSubmit}>
+                        <FormItem
+                            {...formItemLayout}
+                            label="名称:"
+                        >
+                            {getFieldDecorator('name', {
+                                rules: [{
+                                    required: true, message: '请输入数据模型名称',
+                                }],
+                            })(
+                                <Row gutter={8}>
+                                    <Col span={8}>
+                                        <Input />
                                     </Col>
-                </Row>
-                )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="描述:"
-            >
-              {getFieldDecorator('desc', {
-                rules: []
-              })(
-                <Input type='textarea' rows={5} className={styles.textarea} />
-                )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="类别:"
-            >
-              {getFieldDecorator('radio-group')(
-                <div>
-                  <RadioGroup>
-                    <Radio value="a">哈希</Radio>
-                    <Radio value="b">枚举</Radio>
-                    <Radio value="c">数组</Radio>
-                    <Radio value="d">字符</Radio>
-                    <Radio value="e">数值</Radio>
-                    <Radio value="f">布尔</Radio>
-                    <Radio value="g">文件</Radio>
-                  </RadioGroup>
-                  <Table
-                    columns={columns}
-                    dataSource={data}
-                    pagination={false}
-                    size='small'
-                    footer={this.tableFooter}
-                  />
-                </div>
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="分组"
-              hasFeedback
-            >
-              {getFieldDecorator('select', {
-                rules: []
-              })(
-                <Row gutter={8}>
-                  <Col span={8}>
-                    <Select placeholder="请选择分类">
-                      {Options}
-                    </Select>
-                  </Col>
-                  <Col span={16}>
-                    <a onClick={this.goCategory}>新建</a>
-                  </Col>
-                </Row>
+                                    <Col span={16}>
+                                        请输入数据模型名称，以英文字母，数字，下划线组成的1-40字符
+                                    </Col>
+                                </Row>
+                                )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="描述:"
+                        >
+                            {getFieldDecorator('desc', {
+                                rules: []
+                            })(
+                                <Input type='textarea' rows={5} className={styles.textarea} />
+                                )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="类别:"
+                        >
+                            {getFieldDecorator('radio-group')(
+                                <div>
+                                    <RadioGroup>
+                                        <Radio value="a">哈希</Radio>
+                                        <Radio value="b">枚举</Radio>
+                                        <Radio value="c">数组</Radio>
+                                        <Radio value="d">字符</Radio>
+                                        <Radio value="e">数值</Radio>
+                                        <Radio value="f">布尔</Radio>
+                                        <Radio value="g">文件</Radio>
+                                    </RadioGroup>
+                                    <Table
+                                        columns={columns}
+                                        dataSource={attrList}
+                                        pagination={false}
+                                        size='small'
+                                        footer={this.tableFooter}
+                                    />
+                                </div>
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="分组"
+                            hasFeedback
+                        >
+                            {getFieldDecorator('select', {
+                                rules: []
+                            })(
+                                <Row gutter={8}>
+                                    <Col span={8}>
+                                        <Select placeholder="请选择分类">
+                                            {Options}
+                                        </Select>
+                                    </Col>
+                                    <Col span={16}>
+                                        <a onClick={this.goCategory}>新建</a>
+                                    </Col>
+                                </Row>
 
-                )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="标签:"
-            >
-              {getFieldDecorator('tags', {
-                rules: []
-              })(
-                <Input />
-                )}
-            </FormItem>
-            <FormItem  {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit">保存</Button>
-            </FormItem>
-          </Form>
-        </Card>
-        <Category visible={this.state.categoryModal} handleModal={this.handleModal} />
-      </PageHeaderLayout>
-    )
-  }
+                                )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="标签:"
+                        >
+                            {getFieldDecorator('tags', {
+                                rules: []
+                            })(
+                                <Input />
+                                )}
+                        </FormItem>
+                        <FormItem  {...tailFormItemLayout}>
+                            <Button type="primary" htmlType="submit">保存</Button>
+                        </FormItem>
+                    </Form>
+                </Card>
+                <Category visible={this.state.categoryModal} handleModal={this.handleModal} />
+            </div>
+        )
+    }
 }

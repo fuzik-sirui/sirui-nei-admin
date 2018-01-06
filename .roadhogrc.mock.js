@@ -93,7 +93,7 @@ const proxy = {
     res.send({ status: 'ok' });
   },
   'GET /api/getCategory': mockjs.mock({
-    'list|100': [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }]
+    'list': [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }]
   }),
   'GET /api/getAttrList': mockjs.mock({
     'list': [{ key: 1, date: '2014-12-24 23:12:00', name: '名称1', upgradeNum: 'Upgraded: 56' },

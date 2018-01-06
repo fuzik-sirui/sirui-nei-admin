@@ -1,14 +1,14 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
 
-export async function queryAppstoreMenu (params) {
+export async function queryAppstoreMenu(params) {
   return request('api/appstore/menu', {
     method: 'POST',
     body: params
   })
 }
 
-export async function getInterDetail (params) {
+export async function getInterDetail(params) {
   return request('api/interface/detail', {
     method: 'GET',
     body: params
@@ -92,18 +92,27 @@ export async function queryNotices() {
   return request('/api/notices');
 }
 
-//md 模型列表
+//模型列表
 export async function queryMd() {
   return request('/api/md');
 }
 
-//category -分组
+//属性列表
+export async function queryCategory(params) {
+  return request('/api/getCategory', {
+    method: 'GET',
+    body: {
+      ...params
+    }
+  })
+}
+
+//添加分组
 export async function addCategory(params) {
   return request('/api/addCategory', {
     method: 'POST',
     body: {
-      ...params,
-      method: 'post',
+      ...params
     },
   });
 }
@@ -113,8 +122,7 @@ export async function queryAttrList(params) {
   return request('/api/getAttrList', {
     method: 'GET',
     body: {
-      ...params,
-      method: 'post'
+      ...params
     }
   })
 }

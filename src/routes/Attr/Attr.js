@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Table, Input, Icon, Button, Popconfirm, Form, Upload, Modal } from 'antd';
+import { Table, Input, Icon, Button, Popconfirm, Form, Modal } from 'antd';
 import { Row, Col, Card, Tooltip, Divider } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import EditableCell from '../../components/EditableCell/EditableCell';
 import { getType } from '../../utils/utils';
-import { queryMd, queryAttrList } from '../../services/api';
+import { queryAttrList } from '../../services/api';
 import styles from './Attr.less';
+
+import FromJson from "../../components/FromMd/FormJson";
+import FromMd from "../../components/FromMd/FromMd";
 
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
@@ -15,14 +18,12 @@ export default class Attr extends PureComponent {
     super(props);
     this.state = {
       loading: false,
-      modelVisible: false,
-      jsonVisible: false,
-      confirmLoading: false,
-      mdList: [],
+      mdModal: false,
+      jsonModal: false,
       attrList: [],
     }
   }
-  
+
   componentDidMount() {
     let { match: { params: { id } } } = this.props;
     this.getAttrList({ id: id });
@@ -37,18 +38,51 @@ export default class Attr extends PureComponent {
     })
   }
 
+  /**
+   * 新增
+   */
   handleAdd = () => {
     const _key = Math.floor(1000 * Math.random());
+    //先存服务器再渲染
     const newData = {
       key: _key,
-      name: 'addddd',
-      age: 4444,
+      name: '新增项',
+      age: 0,
       address: 'Sidney No. 1 Lake Park',
     };
-    const { data } = this.state;
+    const { attrList } = this.state;
     this.setState({
       attrList: [...attrList, newData]
     })
+  }
+
+  /**
+   * 从模型导入 
+   */
+  goMd = () => {
+    this.setState({
+      mdModal: true
+    });
+  }
+
+  handleMd = (val) => {
+    this.setState({
+      mdModal: false
+    });
+  }
+  /**
+   * 从Json导入 
+   */
+  goJson = () => {
+    this.setState({
+      jsonModal: true
+    });
+  }
+
+  handleJson = () => {
+    this.setState({
+      jsonModal: false
+    });
   }
 
   onDelete = (key) => {
@@ -56,25 +90,16 @@ export default class Attr extends PureComponent {
     this.setState({ data: data.filter(item => item.key !== key) });
   }
 
-  onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
-  }
-
-  handleChange = (e) => {
-    const value = e.target.value;
-    this.setState({ value });
-  }
-
+  /**
+   * 检查
+   */
   check = () => {
     this.setState({ editable: false });
     if (this.props.onChange) {
       this.props.onChange(this.state.value);
     }
   }
-  edit = () => {
-    this.setState({ editable: true });
-  }
+
   render() {
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -83,7 +108,7 @@ export default class Attr extends PureComponent {
     const columns = [{
       title: '名称',
       dataIndex: 'name',
-      render (text, record) {
+      render(text, record) {
         return (
           <EditableCell value={text} type="input" />
         )
@@ -92,7 +117,7 @@ export default class Attr extends PureComponent {
     {
       title: '类型',
       dataIndex: 'type',
-      render (text, record) {
+      render(text, record) {
         return (
           <EditableCell value={text} type="input" />
         )
@@ -110,7 +135,7 @@ export default class Attr extends PureComponent {
     {
       title: '默认值',
       dataIndex: 'default',
-      render (text, record) {
+      render(text, record) {
         return (
           <EditableCell value={text} record="input" />
         )
@@ -119,7 +144,7 @@ export default class Attr extends PureComponent {
     {
       title: '生成规则',
       dataIndex: 'rule',
-      render (text, record) {
+      render(text, record) {
         return (
           <EditableCell value={text} type={record} />
         )
@@ -139,27 +164,22 @@ export default class Attr extends PureComponent {
         );
       }
     }];
-    const columns_select = [{
-      title: '类型',
-      dataIndex: 'name'
-    },
-    {
-      title: '描述',
-      dataIndex: 'desc'
-    }
-    ];
 
     return (
-      <Card title="数据模型详情" bordered={false}>
-        <div style={{ marginBottom: '16px' }}>
-          <ButtonGroup>
-            <Button onClick={this.handleAdd}>添加</Button>
-            <Button onClick={() => this.goMd(true)}>从数据模型导入</Button>
-            <Button onClick={() => this.goJson(true)}>从JSON导入</Button>
-          </ButtonGroup>
-        </div>
-        <Table columns={columns} dataSource={this.state.attrList} pagination={false} />
-      </Card>
+      <div>
+        <Card title="数据模型详情" bordered={false}>
+          <div style={{ marginBottom: '16px' }}>
+            <ButtonGroup>
+              <Button onClick={this.handleAdd}>添加</Button>
+              <Button onClick={this.goMd}>从数据模型导入</Button>
+              <Button onClick={this.goJson}>从JSON导入</Button>
+            </ButtonGroup>
+          </div>
+          <Table columns={columns} dataSource={this.state.attrList} pagination={false} />
+        </Card>
+        <FromJson visible={this.state.jsonModal} handleModal={this.handleJson}></FromJson>
+        <FromMd visible={this.state.mdModal} handleModal={this.handleMd}></FromMd>
+      </div>
     );
   }
 }

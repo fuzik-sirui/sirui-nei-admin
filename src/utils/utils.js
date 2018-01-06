@@ -132,3 +132,13 @@ export function getRoutes(path, routerData) {
   });
   return renderRoutes;
 }
+
+/**
+ * 返回数据类型
+ * @param {*值} val 
+ * @returns{input} 数字 字符 {object} 对象 {array} 数组 {boolean} 布尔
+ */
+export function getType(val) {
+  return "input";
+}
+
