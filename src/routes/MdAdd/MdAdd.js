@@ -19,7 +19,7 @@ const Option = Select.Option;
 const ButtonGroup = Button.Group;
 
 @Form.create()
-export default class Add extends PureComponent {
+export default class MdAdd extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -40,10 +40,11 @@ export default class Add extends PureComponent {
 
     }
 
-    handleModal = (val) => {
+    handleModal = (ret) => {
         this.setState({
-            categoryModal: !!val
+            mdModal: false
         });
+        this.getCategory();
     }
 
     /**
@@ -97,6 +98,7 @@ export default class Add extends PureComponent {
             }
         });
     }
+
 
     /**
      * 新建分组
@@ -188,15 +190,6 @@ export default class Add extends PureComponent {
             }
         },
         {
-            title: '默认值',
-            dataIndex: 'default',
-            render: (text, record) => {
-                return (
-                    <EditableCell value={text} type={getType(text)} />
-                )
-            }
-        },
-        {
             title: '生成规则',
             dataIndex: 'rule',
             render: (text, record) => {
@@ -205,9 +198,10 @@ export default class Add extends PureComponent {
                 )
             }
         }];
+
         return (
-            <PageHeaderLayout title="新建数据模型">
-                <Card bordered={false}>
+            <div>
+                <Card bordered={false} title="新建数据模型">
                     <Form ref="tableForm" onSubmit={this.handleSubmit}>
                         <FormItem
                             {...formItemLayout}
@@ -300,7 +294,7 @@ export default class Add extends PureComponent {
                     </Form>
                 </Card>
                 <Category visible={this.state.categoryModal} handleModal={this.handleModal} />
-            </PageHeaderLayout>
+            </div>
         )
     }
 }

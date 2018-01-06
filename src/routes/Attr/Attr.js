@@ -166,8 +166,8 @@ export default class Attr extends PureComponent {
     }];
 
     return (
-      <PageHeaderLayout title="属性">
-        <Card bordered={false}>
+      <div>
+        <Card title="数据模型详情" bordered={false}>
           <div style={{ marginBottom: '16px' }}>
             <ButtonGroup>
               <Button onClick={this.handleAdd}>添加</Button>
@@ -179,7 +179,7 @@ export default class Attr extends PureComponent {
         </Card>
         <FromJson visible={this.state.jsonModal} handleModal={this.handleJson}></FromJson>
         <FromMd visible={this.state.mdModal} handleModal={this.handleMd}></FromMd>
-      </PageHeaderLayout>
+      </div>
     );
   }
 }

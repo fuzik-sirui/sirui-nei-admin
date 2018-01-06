@@ -7,6 +7,8 @@ import { Tabs } from 'antd';
 import styles from './appList.less';
 
 import { Interface } from './components/index';
+import Md from '../Md/Md';
+
 
 const TabPane = Tabs.TabPane;
 
@@ -52,7 +54,7 @@ export default class AppList extends PureComponent {
             <Interface tableOpreat={this.tableMenuClick} addFun={this.interfaceAdd} />
           </TabPane>
           <TabPane tab="数据模型" key="2">
-
+            <Md />
           </TabPane>
           <TabPane tab="业务分组" key="3">
 

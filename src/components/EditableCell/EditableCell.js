@@ -28,7 +28,7 @@ export default class EditableCell extends PureComponent {
         break;
       case "select":
         return (
-          <Select style={{width: '60px'}} defaultValue={value} onChange={this.handleChange}>
+          <Select style={{width: '60px'}} value={value} onChange={this.handleChange}>
             {
               this.props.option.map((item) => {
                 return <Option key={item.value} value={item.value}>{item.label}</Option>
