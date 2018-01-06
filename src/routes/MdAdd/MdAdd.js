@@ -40,9 +40,9 @@ export default class MdAdd extends PureComponent {
 
     }
 
-    handleModal = (ret) => {
+    handleCategory = (ret) => {
         this.setState({
-            mdModal: false
+            categoryModal: false
         });
         this.getCategory();
     }
@@ -293,7 +293,7 @@ export default class MdAdd extends PureComponent {
                         </FormItem>
                     </Form>
                 </Card>
-                <Category visible={this.state.categoryModal} handleModal={this.handleModal} />
+                <Category visible={this.state.categoryModal} handleModal={this.handleCategory} />
             </div>
         )
     }
