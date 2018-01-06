@@ -9,6 +9,9 @@ import Category from './Category';
 import styles from "./MdAdd.less";
 
 import { queryCategory, queryAttrList } from "../../services/api";
+import FromJson from "../../components/FromMd/FormJson";
+import FromMd from "../../components/FromMd/FromMd";
+import { config } from '../../common/config';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -21,37 +24,71 @@ export default class Add extends PureComponent {
         super(props);
         this.state = {
             categoryModal: false,
-            categoryList: [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }],
-            attrList: []
+            mdModal: false,
+            jsonModal: false,
+            categoryList: [],//分组数组
+            attrList: []//属性数组
         }
     }
+
     componentDidMount() {
-        this.getAttrList();
+        let { match: { params: { id } } } = this.props;
+        if (id) {
+            this.getCategory({ id: id });
+            this.getAttrList({ id: id });
+        }
+
     }
+
     handleModal = (val) => {
         this.setState({
             categoryModal: !!val
         });
     }
-    getCategory = () => {
-        queryCategory().then(ret => {
-            if (ret.status == 'ok') {
-                this.setState({
-                    categoryList: ret.list
-                });
-            }
-        })
-    }
-    getAttrList = () => {
-        queryAttrList({}).then(ret => {
-            if (ret.status == 'ok') {
-                this.setState({
-                    attrList: ret.list
-                });
-            }
+
+    /**
+     * 分组
+     */
+    getCategory = (params) => {
+        queryCategory(params).then(ret => {
+            this.setState({
+                categoryList: ret.list
+            });
         })
     }
 
+    /**
+     * 属性
+     */
+    getAttrList = (params) => {
+        queryAttrList(params).then(ret => {
+            this.setState({
+                attrList: ret.list
+            });
+        })
+    }
+
+    /**
+     * 新增
+     */
+    handleAdd = () => {
+        const _key = Math.floor(1000 * Math.random());
+        //先存服务器再渲染
+        const newData = {
+            key: _key,
+            name: '新增项',
+            age: 0,
+            address: 'Sidney No. 1 Lake Park',
+        };
+        const { attrList } = this.state;
+        this.setState({
+            attrList: [...attrList, newData]
+        })
+    }
+
+    /**
+     * 保存表单
+     */
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -61,6 +98,9 @@ export default class Add extends PureComponent {
         });
     }
 
+    /**
+     * 新建分组
+     */
     goCategory = () => {
         this.setState(
             { categoryModal: true }
@@ -68,39 +108,58 @@ export default class Add extends PureComponent {
         console.log("goCategory：" + this.state.categoryModal);
     }
 
+    /**
+     * 从模型导入 
+     */
+    goMd = () => {
+        this.setState({
+            mdModal: true
+        });
+    }
 
+    handleMd = (val) => {
+        this.setState({
+            mdModal: false
+        });
+    }
+    /**
+     * 从Json导入 
+     */
+    goJson = () => {
+        this.setState({
+            jsonModal: true
+        });
+    }
+
+    handleJson = () => {
+        this.setState({
+            jsonModal: false
+        });
+    }
+
+    /**
+     * 表格footer
+     */
     tableFooter = () => {
-        return (<ButtonGroup>
+        return (<div><ButtonGroup>
             <Button onClick={this.handleAdd}>添加</Button>
-            <Button onClick={() => { }}>从数据模型导入</Button>
-            <Button onClick={() => { }}>从JSON导入</Button>
-        </ButtonGroup>)
+            <Button onClick={this.goMd}>从数据模型导入</Button>
+            <Button onClick={this.goJson}>从JSON导入</Button>
+        </ButtonGroup>
+            <FromJson visible={this.state.jsonModal} handleModal={this.handleJson}></FromJson>
+            <FromMd visible={this.state.mdModal} handleModal={this.handleMd}></FromMd>
+        </div>
+        )
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const formItemLayout = {
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 4 },
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 20 },
-            },
-        };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 20,
-                    offset: 4,
-                },
-            },
-        };
+        let formItemLayout = config.formItemLayout;
+        let tailFormItemLayout = config.tailFormItemLayout;
+        let { categoryList } = this.state;
+        let Options = categoryList.map(item => <Option key={item.name}>{item.name}</Option>);
+        let { attrList } = this.state;
+        //表头
         const columns = [{
             title: '名称',
             dataIndex: 'name',
@@ -145,20 +204,7 @@ export default class Add extends PureComponent {
                     <EditableCell value={text} type={getType(text)} />
                 )
             }
-        }
-        ];
-        const data = [];
-        for (let i = 0; i < 3; ++i) {
-            data.push({
-                key: i,
-                date: '2014-12-24 23:12:00',
-                name: '名称',
-                upgradeNum: 'Upgraded: 56',
-            });
-        }
-        let { categoryList } = this.state;
-        console.log(JSON.stringify(categoryList))
-        let Options = categoryList.map(item => <Option key={item.name}>{item.name}</Option>);
+        }];
         return (
             <PageHeaderLayout title="新建数据模型">
                 <Card bordered={false}>
@@ -209,7 +255,7 @@ export default class Add extends PureComponent {
                                     </RadioGroup>
                                     <Table
                                         columns={columns}
-                                        dataSource={data}
+                                        dataSource={attrList}
                                         pagination={false}
                                         size='small'
                                         footer={this.tableFooter}
