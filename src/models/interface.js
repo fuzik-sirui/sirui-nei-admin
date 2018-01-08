@@ -7,6 +7,13 @@ export default {
     pageData: {},
   },
   effects: {
+    * add ({
+      payload
+    }, {call, put}) {
+      yield put(routerRedux.push({
+        pathname: '/appstore/interfaceAdd'
+      }))
+    },
     * detail ({
       payload,
     }, {call, put}) {

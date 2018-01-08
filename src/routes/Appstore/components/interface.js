@@ -29,7 +29,11 @@ export default class Interface extends PureComponent {
         addBtn: true,
         fetch: { url: '/api/project/interface', data: () => this.filterForm, dataKey: 'rows' },
         tableList: [
-          { title: '名称', dataIndex: 'name', key: 'name' },
+          { title: '名称', dataIndex: 'name', key: 'name',
+            render (text, record) {
+              return <Link to={`/appstore/interfaceDetail?id=${record.id}`}>{text}</Link>
+            }
+          },
           { title: '方法', dataIndex: 'method', key: 'method' },
           { title: '路径', dataIndex: 'path', key: 'path' },
           { title: '标签', dataIndex: 'tips', key: 'tips',
@@ -55,7 +59,6 @@ export default class Interface extends PureComponent {
   }
   componentDidMount() {
     const { dispatch } = this.props;
-    
   }
   
   render () {

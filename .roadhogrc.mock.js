@@ -7,6 +7,7 @@ import { getProfileBasicData } from './mock/profile';
 import { getProfileAdvancedData } from './mock/profile';
 import { getNotices } from './mock/notices';
 import { getAppstoreMenu, getInterface } from './mock/appstore';
+import { group } from './mock/group'; 
 import { format, delay } from 'roadhog-api-doc';
 import { interfaceDetail } from './mock/interfaceDetail';
 import { getMds } from './mock/md';
@@ -53,6 +54,7 @@ const proxy = {
   'GET /api/activities': getActivities,
   'GET /api/rule': getRule,
   'GET /api/interface/detail': interfaceDetail,
+  'GET /api/getGroup': group,
   'POST /api/rule': {
     $params: {
       pageSize: {

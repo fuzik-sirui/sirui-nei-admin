@@ -30,20 +30,20 @@ export default class AppList extends PureComponent {
   }
 
   tableMenuClick = (e, record) => {
-    // if (e.key === 1) {
-    //   console.log('ccc');
-      
-    // }
-    this.props.dispatch({
-      type: 'interface/detail',
-      payload: {
-        id: record.id
-      }
-    });
+    if (e.key == 1) {
+      this.props.dispatch({
+        type: 'interface/detail',
+        payload: {
+          id: record.id
+        }
+      });
+    }
   }
 
-  interfaceAdd () {
-
+  interfaceAdd = () => {
+    this.props.dispatch({
+      type: 'interface/add',
+    })
   }
 
   render () {

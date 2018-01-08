@@ -49,6 +49,9 @@ export const getRouterData = (app) => {
     '/appstore/interfaceDetail': {
       component: dynamicWrapper(app, ['interface'], () => import('../routes/Appstore/components/InterfaceDetail'))
     },
+    '/appstore/interfaceAdd': {
+      component: dynamicWrapper(app, ['interface'], () => import('../routes/Appstore/components/InterfaceAdd'))
+    },
     '/appstore/attr/:id': {
       component: dynamicWrapper(app, [], () => import('../routes/Attr/Attr')),
     },

@@ -15,6 +15,12 @@ export async function getInterDetail(params) {
   })
 }
 
+export async function getGroup() {
+  return request('api/getGroup', {
+    method: 'GET',
+  })
+}
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
