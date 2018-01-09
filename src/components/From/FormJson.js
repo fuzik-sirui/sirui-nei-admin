@@ -3,6 +3,7 @@ import { Table, Button, Form, Modal, Upload, Icon, Input } from 'antd';
 import { config } from '../../common/config';
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
 
 @Form.create()
 export default class FromJson extends PureComponent {
@@ -45,7 +46,7 @@ export default class FromJson extends PureComponent {
                     </Upload>
                 </FormItem>
                 <FormItem label="JSON:" {...formItemLayout}>
-                    <Input type="textarea" row={5} placeholder="内容" style={{ height: '5rem' }} />
+                    <TextArea row={5} placeholder="内容" />
                 </FormItem>
             </Form>
         </Modal>);

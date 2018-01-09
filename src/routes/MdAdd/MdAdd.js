@@ -9,14 +9,15 @@ import Category from './Category';
 import styles from "./MdAdd.less";
 
 import { queryCategory, queryAttrList } from "../../services/api";
-import FromJson from "../../components/FromMd/FormJson";
-import FromMd from "../../components/FromMd/FromMd";
+import FromJson from "../../components/From/FormJson";
+import FromMd from "../../components/From/FromMd";
 import { config } from '../../common/config';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const ButtonGroup = Button.Group;
+const { TextArea } = Input;
 
 @Form.create()
 export default class MdAdd extends PureComponent {
@@ -229,7 +230,7 @@ export default class MdAdd extends PureComponent {
               {getFieldDecorator('desc', {
                 rules: []
               })(
-                <Input type='textarea' rows={5} className={styles.textarea} />
+                <TextArea rows={3} className={styles.textarea} />
                 )}
             </FormItem>
             <FormItem

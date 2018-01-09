@@ -1,6 +1,6 @@
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 14 }
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 }
 }
 const tailFormItemLayout = {
     wrapperCol: {
@@ -10,7 +10,7 @@ const tailFormItemLayout = {
         },
         sm: {
             span: 18,
-            offset: 6,
+            offset: 4,
         },
     },
 };

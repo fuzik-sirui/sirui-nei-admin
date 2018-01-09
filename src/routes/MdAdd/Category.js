@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Input, Button, Form, Select, Modal, message } from 'antd';
 import { Row, Col, Divider } from 'antd';
-import styles from './Category.less';
 
 import { addCategory } from "../../services/api";
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
 
 @Form.create()
 export default class Category extends PureComponent {
@@ -92,7 +92,7 @@ export default class Category extends PureComponent {
             {getFieldDecorator('desc', {
               rules: []
             })(
-              <Input type='textarea' rows={5} className={styles.textarea} />
+              <TextArea rows={2} />
               )}
           </FormItem>
           <FormItem  {...tailFormItemLayout}>

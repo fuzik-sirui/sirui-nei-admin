@@ -7,8 +7,8 @@ import { getType } from '../../utils/utils';
 import { queryAttrList } from '../../services/api';
 import styles from './Attr.less';
 
-import FromJson from "../../components/FromMd/FormJson";
-import FromMd from "../../components/FromMd/FromMd";
+import FromJson from "../../components/From/FormJson";
+import FromMd from "../../components/From/FromMd";
 
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
