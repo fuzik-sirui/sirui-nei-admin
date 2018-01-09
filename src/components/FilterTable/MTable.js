@@ -94,15 +94,17 @@ class DataTable extends React.Component {
     const self = this
     const { fetch, rowKey, ...tableProps } = this.props
     const { loading, dataSource, pagination } = this.state
-    if (tableProps.columns[tableProps.columns.length - 1].title === '操作') {
-      tableProps.columns.splice(tableProps.columns.length - 1, 1)
-    } else {
-      tableProps.columns.push({ 
-        title: '操作', dataIndex: 'action', key: 'action',
-        render (text, record) {
-          return <DropOption onMenuClick={e => self.props.menuClick(e, record)} menuOptions={self.props.opreat} />
-        }
-      })
+    if (this.props.opreat) {
+      if (tableProps.columns[tableProps.columns.length - 1].title === '操作') {
+        tableProps.columns.splice(tableProps.columns.length - 1, 1)
+      } else {
+        tableProps.columns.push({ 
+          title: '操作', dataIndex: 'action', key: 'action',
+          render (text, record) {
+            return <DropOption onMenuClick={e => self.props.menuClick(e, record)} menuOptions={self.props.opreat} />
+          }
+        })
+      }
     }
     return (<Table
       ref="DataTable"
@@ -128,9 +130,12 @@ DataTable.propTypes = {
     PropTypes.object,
   ]),
   columns: PropTypes.array.isRequired,
-  opreat: PropTypes.array.isRequired,
+  opreat: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.bool,
+  ]),
   otherList: PropTypes.array,
-  menuClick: PropTypes.func.isRequired,
+  menuClick: PropTypes.func,
   localName: PropTypes.string.isRequired,
   dataSource: PropTypes.array,
   scroll: PropTypes.number.isRequired,

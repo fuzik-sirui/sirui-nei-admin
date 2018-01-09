@@ -8,7 +8,7 @@ import styles from './appList.less';
 
 import { Interface } from './components/index';
 import Md from '../Md/Md';
-
+import Group from './components/Group';
 
 const TabPane = Tabs.TabPane;
 
@@ -57,7 +57,7 @@ export default class AppList extends PureComponent {
             <Md />
           </TabPane>
           <TabPane tab="业务分组" key="3">
-
+            <Group />
           </TabPane>
         </Tabs>
       </div>

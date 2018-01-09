@@ -111,7 +111,7 @@ class InterfaceAddClass extends Component {
               <Select placeholder="请选择业务分组">
                 {
                   group.map((item) => {
-                    return <Option key={item.key} value={item.key}>{ item.label }</Option>
+                    return <Option key={item.id} value={item.id}>{ item.label }</Option>
                   })
                 }
               </Select>

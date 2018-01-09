@@ -65,10 +65,13 @@ FilterTable.propTypes = {
   fetch: PropTypes.object.isRequired,
   tableList: PropTypes.array.isRequired,
   otherList: PropTypes.array,
-  opreat: PropTypes.array.isRequired,
+  opreat: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.bool,
+  ]),
   rowKey: PropTypes.string.isRequired,
   localName: PropTypes.string.isRequired,
-  menuClick: PropTypes.func.isRequired,
+  menuClick: PropTypes.func,
   scroll: PropTypes.number.isRequired,
   pagination: PropTypes.oneOfType([
     PropTypes.bool,
