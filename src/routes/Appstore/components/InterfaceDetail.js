@@ -1,16 +1,12 @@
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Tabs, Icon, Card, Form, Input, Button, Select, Spin, Table } from 'antd';
+import { Card, Form, Input, Select, Spin, Table } from 'antd';
 import queryString from 'query-string';
 
 import styles from './interfaceDetail.less';
 
-import HoverForm from '../../../components/HoverForm/HoverForm';
 import EditableCell from '../../../components/EditableCell/EditableCell';
 
-const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -21,15 +17,15 @@ const Option = Select.Option;
 class DetailInterface extends PureComponent {
   constructor(props) {
     super(props);
-    let { interface: { pageData } } = this.props;
-    let option = [
+    const { interface: { pageData } } = this.props;
+    const option = [
       { value: 0, label: '否' },
-      { value: 1, label: '是' }
+      { value: 1, label: '是' },
     ];
     this.state = {
       tabList: [
-        {key: 'request', tab: '请求信息',},
-        {key: 'response', tab: '响应信息',}
+        { key: 'request', tab: '请求信息' },
+        { key: 'response', tab: '响应信息' },
       ],
       tabKey: 'request',
       textList: [
@@ -46,81 +42,78 @@ class DetailInterface extends PureComponent {
         { type: 'input', placeholder: '负责人', key: 'principal', rules: [] },
         { type: 'input', placeholder: '描述', key: 'decs', rules: [] },
       ],
-      pageData: pageData,
-      
+      pageData,
       columns: [{
         title: '名称',
         dataIndex: 'name',
-        render (text, record) {
+        render(text) {
           return (
             <EditableCell value={text} type="input" />
-          )
-        }
+          );
+        },
       }, {
         title: '类型',
         dataIndex: 'type',
-        render (text, record) {
+        render(text) {
           return (
             <EditableCell value={text} type="input" />
-          )
-        }
+          );
+        },
       }, {
         title: '描述',
         dataIndex: 'decs',
-        render (text, record) {
+        render(text) {
           return (
             <EditableCell value={text} type="input" />
-          )
-        }
+          );
+        },
       }, {
         title: '必需',
         dataIndex: 'isRequired',
-        render (text, record) {
+        render(text) {
           return (
             <EditableCell value={text} type="select" option={option} />
-          )
-        }
+          );
+        },
       }, {
         title: '默认值',
         dataIndex: 'defaultValue',
-        render (text, record) {
+        render(text) {
           return (
             <EditableCell value={text} type="input" />
-          )
-        }
+          );
+        },
       }, {
         title: '生成规则',
         dataIndex: 'rules',
-        render (text, record) {
+        render(text) {
           return (
             <EditableCell value={text} type="input" />
-          )
-        }
-      }]
-    }
+          );
+        },
+      }],
+    };
   }
-  
-  componentDidMount () {
+
+  componentDidMount() {
     this.props.dispatch({
       type: 'interface/getData',
       payload: queryString.parse(this.props.location.search)
-    })
-    
+    });
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.interface.pageData) {
       this.setState({
-        pageData: nextProps.interface.pageData
-      })
+        pageData: nextProps.interface.pageData,
+      });
     }
   }
 
-  methodChange (value) {
+  onTabChange(value) {
     console.log(value);
     this.setState({
-
-    })
+    });
   }
 
   expandedRowRender = (record) => {
@@ -141,13 +134,12 @@ class DetailInterface extends PureComponent {
   }
 
   contentList = (key) => {
-    let { pageData: { request, response }, columns } = this.state;
-    
+    const { pageData: { request, response }, columns } = this.state;
     const List = {
       request: <div className={styles.requestWrap}>
         { request ? <div>
           <span>请求地址：</span>
-          <Select defaultValue={request.method} style={{width: '150px', marginRight: '10px' }} onChange={this.methodChange} >
+          <Select defaultValue={request.method} style={{width: '150px', marginRight: '10px' }} onChange={this.onTabChange} >
             <Option value="POST">POST</Option>
             <Option value="GET">GET</Option>
             <Option value="DELETE">DELETE</Option>
@@ -156,38 +148,35 @@ class DetailInterface extends PureComponent {
           </Select>
           <Input value={request.url} style={{width: '350px'}} />
           <div style={{marginTop: '20px'}}>
-            <span>请求数据</span>
             <Table columns={columns} dataSource={this.state.pageData.request.data} rowKey={record => record.name} pagination={false} />
           </div>
         </div> : <Spin /> }
       </div>,
-      response:  <div className={styles.responseWrap}>
-        {
-          response ? 
-          <div>
-            <div style={{marginTop: '0px'}}>
-              <Table columns={columns} expandedRowRender={this.expandedRowRender} dataSource={this.state.pageData.response.data} rowKey={record => record.name} pagination={false} />
-            </div>
-          </div> : <Spin />
-        }
-      </div>
-    }
-    return List[key]
+      response:
+        <div className={styles.responseWrap}>
+          {
+            response ?
+              <div style={{marginTop: '0px'}}>
+                <Table columns={columns} expandedRowRender={this.expandedRowRender} dataSource={this.state.pageData.response.data} rowKey={record => record.name} pagination={false} />
+              </div>
+              : <Spin />
+          }
+        </div>
+    };
+    return List[key];
   }
 
   handleSubmit = () => {
-
   }
 
   onTabChange = (key) => {
     this.setState({
-      tabKey: key
-    })
+      tabKey: key,
+    });
   }
 
   render () {
-    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-
+    const { getFieldDecorator, } = this.props.form;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -198,9 +187,8 @@ class DetailInterface extends PureComponent {
         sm: { span: 16 },
       },
     };
-
-    let { pageData, tabList, tabKey, textList, formList, topForm } = this.state;
-    let { detailLoading } = this.props.interface;
+    const { pageData, tabList, tabKey, } = this.state;
+    const { detailLoading } = this.props.interface;
     return (
       <Card loading={detailLoading} title={pageData.title} className={styles.interDetailWrap}>
         <Form className={styles.topForm} layout="inline" onSubmit={this.handleSubmit} >
@@ -218,21 +206,21 @@ class DetailInterface extends PureComponent {
               <Input placeholder="创建者" />
             )}
           </FormItem>
-          <FormItem label="分组"  {...formItemLayout} >
-            {getFieldDecorator('group', { 
+          <FormItem label="分组" {...formItemLayout} >
+            {getFieldDecorator('group', {
               initialValue: pageData.group,
             })(
               <Input placeholder="分组" />
             )}
           </FormItem>
-          <FormItem label="负责人"  {...formItemLayout} >
-            {getFieldDecorator('principal', { 
+          <FormItem label="负责人" {...formItemLayout} >
+            {getFieldDecorator('principal', {
               initialValue: pageData.principal,
             })(
-              <Input placeholder="负责人"  />
+              <Input placeholder="负责人" />
             )}
           </FormItem>
-          <FormItem label="描述"  {...formItemLayout} >
+          <FormItem label="描述" {...formItemLayout} >
             {getFieldDecorator('decs', {
               initialValue: pageData.decs,
             })(
@@ -240,13 +228,18 @@ class DetailInterface extends PureComponent {
             )}
           </FormItem>
         </Form>
-        <Card tabList={tabList} onTabChange={(key) => { this.onTabChange(key)}} >
+        <Card
+          className={styles.sideTab}
+          tabList={tabList}
+          onTabChange={key => this.onTabChange(key)}
+        >
           {this.contentList([tabKey])}
         </Card>
       </Card>
-    )
+    );
   }
 }
 
-const InterfaceDetail = Form.create()(DetailInterface)
-export default InterfaceDetail
+const InterfaceDetail = Form.create()(DetailInterface);
+
+export default InterfaceDetail;

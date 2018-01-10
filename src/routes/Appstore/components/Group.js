@@ -1,37 +1,39 @@
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Row, Col, Card, List, Avatar, Modal } from 'antd';
+import { Modal, Form, Input } from 'antd';
+
+import { formItemLayout } from '../../../common/config';
 
 import FilterTable from '../../../components/FilterTable/FilterTable';
-import FormModal from '../../../components/FormModal/FormModal';
 
-import styles from './interface.less';
+const FormItem = Form.Item;
 
 @connect(state => ({
   group: state.group,
 }))
 
 class GroupClass extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
     const self = this;
-    let tableHeight = window.innerHeight - 320;
+    const tableHeight = window.innerHeight - 320;
     this.state = {
       FilterTableParams: {
         filterList: [
           { key: 'label', type: 'input', label: '名称', placeholder: '请输入接口名称' },
         ],
         filterGrade: [],
-        filterForm: { name: '', path: '', group: ''},
+        filterForm: { name: '', path: '', group: '' },
         addBtn: true,
         fetch: { url: '/api/project/group', data: () => this.filterForm, dataKey: 'rows' },
         tableList: [
-          { title: '名称', dataIndex: 'label', key: 'label',
-            render (text, record) {
-              return <a href="javascript:;" onClick={self.detail(record.id)}>{text}</a>
-            }
+          {
+            title: '名称',
+            dataIndex: 'label',
+            key: 'label',
+            render(text, record) {
+              return <a onClick={() => self.detail(record)}>{text}</a>;
+            },
           },
           { title: '描述', dataIndex: 'desc', key: 'desc' },
           { title: '负责人', dataIndex: 'principal', key: 'principal' },
@@ -43,64 +45,116 @@ class GroupClass extends PureComponent {
         rowKey: 'id',
         localName: 'group',
         pagination: false,
-        scroll: tableHeight
+        scroll: tableHeight,
       },
       visible: false,
-      detailId: null,
-    }
+      detail: {},
+      addVisible: false,
+    };
   }
 
-  detail = (id) => {
+  detail = (content) => {
     this.setState({
       visible: true,
-      detailId: id,
-    })
+      detail: content,
+    });
   }
-  
-  handleOk = () => {
 
+  handleOk = () => {
+    this.setState({
+      visible: false,
+    });
   }
 
   handleCancel = () => {
-
+    this.setState({
+      visible: false,
+    });
   }
 
-  componentDidMount() {
-    const { dispatch } = this.props;
+  addOk = () => {
+    this.setState({
+      addVisible: false,
+    });
   }
-  
-  render () {
+
+  addCancel = () => {
+    this.setState({
+      addVisible: false,
+    });
+  }
+
+  openAdd = () => {
+    this.setState({
+      addVisible: true,
+    });
+  }
+
+  render() {
     const { getFieldDecorator } = this.props.form;
-    let { FilterTableParams, modalVisible, modalLevel, levelTableParams  } = this.state;
+    const { FilterTableParams, detail } = this.state;
     FilterTableParams.menuClick = this.props.tableOpreat;
-    FilterTableParams.onAdd = this.props.addFun;
+    FilterTableParams.onAdd = this.openAdd;
     return (
       <div>
-        <FilterTable {...FilterTableParams}   />
+        <FilterTable {...FilterTableParams} />
         <Modal
           title="新增分组"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          visible={this.state.addVisible}
+          onOk={this.addOk}
+          onCancel={this.addCancel}
         >
-          <Form onSubmit={this.modifly}>
+          <Form onSubmit={this.addOk}>
             <FormItem label="名称" {...formItemLayout} >
-              {getFieldDecorator('name', {
-                rules: [ { required: true, message: '请输入分组名称', } ]
+              {getFieldDecorator('label', {
+                rules: [{ required: true, message: '请输入分组名称' }],
               })(
                 <Input placeholder="分组名称" />
               )}
             </FormItem>
             <FormItem label="负责人" {...formItemLayout} >
               {getFieldDecorator('principal', {
-                rules: [ { required: true, message: '请选择分组负责人', } ]
+                rules: [{ required: true, message: '请选择分组负责人' }],
               })(
                 <Input placeholder="负责人" />
               )}
             </FormItem>
             <FormItem label="描述" {...formItemLayout} >
               {getFieldDecorator('desc', {
-                rules: [ { required: true, message: '请输入分组描述', } ]
+                rules: [{ required: true, message: '请输入分组描述' }],
+              })(
+                <Input placeholder="描述" />
+              )}
+            </FormItem>
+          </Form>
+        </Modal>
+        <Modal
+          title="编辑分组"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <Form onSubmit={this.modifly}>
+            <FormItem label="名称" {...formItemLayout} >
+              {getFieldDecorator('label', {
+                initialValue: detail.label,
+                rules: [{ required: true, message: '请输入分组名称' }],
+              })(
+                <Input placeholder="分组名称" />
+              )}
+            </FormItem>
+            <FormItem label="负责人" {...formItemLayout} >
+              {getFieldDecorator('principal', {
+                initialValue: detail.principal,
+                rules: [{ required: true, message: '请选择分组负责人' }],
+              })(
+                <Input placeholder="负责人" />
+              )}
+            </FormItem>
+            <FormItem label="描述" {...formItemLayout} >
+              {getFieldDecorator('desc', {
+                initialValue: detail.desc,
+                rules: [{ required: true, message: '请输入分组描述' }],
               })(
                 <Input placeholder="描述" />
               )}
@@ -108,10 +162,10 @@ class GroupClass extends PureComponent {
           </Form>
         </Modal>
       </div>
-    )
+    );
   }
 }
 
-const Group = Form.creat()(GroupClass);
+const Group = Form.create()(GroupClass);
 
 export default Group;
