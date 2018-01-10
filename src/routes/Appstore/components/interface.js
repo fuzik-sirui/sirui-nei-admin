@@ -16,7 +16,7 @@ import styles from './interface.less';
 export default class Interface extends PureComponent {
   constructor (props) {
     super(props);
-    let tableHeight = window.innerHeight - 320;
+    let tableHeight = window.innerHeight - 260;
     this.state = {
       FilterTableParams: {
         filterList: [

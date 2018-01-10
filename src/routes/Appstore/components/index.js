@@ -1,5 +1,5 @@
-import Interface from './interface'
+import Interface from './interface';
 
 export default {
-  Interface
+  Interface,
 }
